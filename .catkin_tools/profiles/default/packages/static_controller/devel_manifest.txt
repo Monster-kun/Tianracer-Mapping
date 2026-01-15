@@ -1,0 +1,6 @@
+controller/static_controller
+/root/workspace/ROS/tianracer/devel/.private/static_controller/cmake.lock /root/workspace/ROS/tianracer/devel/./cmake.lock
+/root/workspace/ROS/tianracer/devel/.private/static_controller/lib/libstatic_controller.so /root/workspace/ROS/tianracer/devel/lib/libstatic_controller.so
+/root/workspace/ROS/tianracer/devel/.private/static_controller/lib/pkgconfig/static_controller.pc /root/workspace/ROS/tianracer/devel/lib/pkgconfig/static_controller.pc
+/root/workspace/ROS/tianracer/devel/.private/static_controller/share/static_controller/cmake/static_controllerConfig.cmake /root/workspace/ROS/tianracer/devel/share/static_controller/cmake/static_controllerConfig.cmake
+/root/workspace/ROS/tianracer/devel/.private/static_controller/share/static_controller/cmake/static_controllerConfig-version.cmake /root/workspace/ROS/tianracer/devel/share/static_controller/cmake/static_controllerConfig-version.cmake

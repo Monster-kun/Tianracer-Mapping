@@ -1,0 +1,10 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/home/ruiii/STUDY/Mr.GUO/code/code/janseen_ros1/src/planner/local_planner_server/plugins/planners"
+    ],
+    "python.analysis.extraPaths": [
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/home/ruiii/STUDY/Mr.GUO/code/code/janseen_ros1/src/planner/local_planner_server/plugins/planners"
+    ]
+}

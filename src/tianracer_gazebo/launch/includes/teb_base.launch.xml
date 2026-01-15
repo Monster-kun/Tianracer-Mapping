@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Define the robot's name with a default value of "tianracer" -->
+  <arg name="robot_name" default="tianracer" />
+  
+  <!-- Define various frame and topic IDs with default values -->
+  <arg name="odom_frame_id" default="odom"/>
+  <arg name="base_frame_id" default="base_footprint"/>
+  <arg name="global_frame_id" default="map"/>
+  <arg name="laser_frame_id" default="laser"/>
+  <arg name="odom_topic" default="odom" />
+  <arg name="laser_topic" default="scan" />
+  <arg name="map_frame" default="odom" />
+  <arg name="local_planner" default="teb" />
+
+  <!-- Create a group namespace for parameters related to the robot -->
+  <group ns="$(arg robot_name)">
+  
+    <!-- Launch the "move_base" node for navigation -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" clear_params="true">
+    
+      <!-- Set the base local planner to "teb_local_planner/TebLocalPlannerROS" -->
+      <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" if="$(eval arg('local_planner')=='teb')" />
+      <rosparam file="$(find tianracer_gazebo)/config/teb/teb_local_planner_params.yaml" command="load" if="$(eval arg('local_planner')=='teb')" />
+      <!-- local planner plugin -->
+      <param name="base_local_planner" value="dwa_controller/DWAController" if="$(eval arg('local_planner')=='dwa')" />
+      <rosparam file="$(find tianracer_gazebo)/config/controller/dwa_controller_params.yaml" command="load" if="$(eval arg('local_planner')=='dwa')" />
+
+      <param name="base_local_planner" value="pid_controller/PIDController" if="$(eval arg('local_planner')=='pid')" />
+      <rosparam file="$(find tianracer_gazebo)/config/controller/pid_controller_params.yaml" command="load" if="$(eval arg('local_planner')=='pid')" />
+
+      <param name="base_local_planner" value="apf_controller/APFController" if="$(eval arg('local_planner')=='apf')" />
+      <rosparam file="$(find tianracer_gazebo)/config/controller/apf_controller_params.yaml" command="load" if="$(eval arg('local_planner')=='apf')" />
+
+      <param name="base_local_planner" value="rpp_controller/RPPController" if="$(eval arg('local_planner')=='rpp')" />
+      <rosparam file="$(find tianracer_gazebo)/config/controller/rpp_controller_params.yaml" command="load" if="$(eval arg('local_planner')=='rpp')" />
+
+      <param name="base_local_planner" value="lqr_controller/LQRController" if="$(eval arg('local_planner')=='lqr')" />
+      <rosparam file="$(find tianracer_gazebo)/config/controller/lqr_controller_params.yaml" command="load" if="$(eval arg('local_planner')=='lqr')" />
+
+      <param name="base_local_planner" value="mpc_controller/MPCController" if="$(eval arg('local_planner')=='mpc')" />
+      <rosparam file="$(find tianracer_gazebo)/config/controller/mpc_controller_params.yaml" command="load" if="$(eval arg('local_planner')=='mpc')" />
+
+      <param name="base_local_planner" value="static_controller/StaticController" if="$(eval arg('local_planner')=='static')" />
+
+      <!-- ORCA -->
+      <param name="base_local_planner" value="orca_controller/ORCAController" if="$(eval arg('local_planner')=='orca')" />
+      <param name="ORCAController/agent_number" value="$(arg agent_number)" if="$(eval arg('local_planner')=='orca')" />
+      <param name="ORCAController/agent_id" value="$(arg agent_id)" if="$(eval arg('local_planner')=='orca')" />
+      <rosparam file="$(find tianracer_gazebo)/config/controller/orca_controller_params.yaml" command="load" if="$(eval arg('local_planner')=='orca')" />
+      
+      <!-- Set the controller frequency to 10.0 -->
+      <param name="controller_frequency" value="10.0"/> 
+      
+      <!-- Load common costmap parameters for the global and local costmaps -->
+      <rosparam file="$(find tianracer_gazebo)/config/teb/costmap_common_params.yaml" command="load" ns="global_costmap" />
+      <rosparam file="$(find tianracer_gazebo)/config/teb/costmap_common_params.yaml" command="load" ns="local_costmap" />
+      
+      <!-- Load parameters for the local costmap -->
+      <rosparam file="$(find tianracer_gazebo)/config/teb/local_costmap_params.yaml" command="load" />
+      
+      <!-- Load parameters for the global costmap -->
+      <rosparam file="$(find tianracer_gazebo)/config/teb/global_costmap_params.yaml" command="load" />
+
+      <!-- Load additional parameters for move_base -->
+      <rosparam file="$(find tianracer_gazebo)/config/teb/move_base_params.yaml" command="load" />
+      
+      <!-- Load parameters for the base global planner -->
+      <rosparam file="$(find tianracer_gazebo)/config/teb/base_global_planner_params.yaml" command="load" />
+      
+      
+
+      <!-- Reset frame_id parameters using user input data -->
+      <param unless="$(eval robot_name=='/')" name="local_costmap/robot_base_frame" value="$(arg robot_name)/$(arg base_frame_id)"/>
+      <param unless="$(eval robot_name=='/')" name="local_costmap/global_frame" value="$(arg robot_name)/$(arg odom_frame_id)"/>
+      <param unless="$(eval robot_name=='/')" name="local_costmap/scan/sensor_frame" value="$(arg robot_name)/l$(arg laser_frame_id)"/>
+      <param unless="$(eval robot_name=='/')" name="local_costmap/scan/topic" value="/$(arg robot_name)/$(arg laser_topic)"/>
+      <param unless="$(eval robot_name=='/')" name="global_costmap/robot_base_frame" value="$(arg robot_name)/$(arg base_frame_id)"/>
+      <param unless="$(eval robot_name=='/')" name="global_costmap/global_frame" value="$(arg global_frame_id)"/>
+      <param unless="$(eval robot_name=='/')" name="global_costmap/scan/sensor_frame" value="$(arg robot_name)/$(arg laser_frame_id)"/>
+      <param unless="$(eval robot_name=='/')" name="global_costmap/scan/topic" value="/$(arg robot_name)/$(arg laser_topic)"/>
+      <param unless="$(eval robot_name=='/')" name="TebLocalPlannerROS/odom_topic" value="/$(arg robot_name)/$(arg odom_topic)"/>
+      <param unless="$(eval robot_name=='/')" name="TebLocalPlannerROS/map_frame" value="$(arg robot_name)/$(arg map_frame)"/>
+    </node>
+  </group>
+</launch>
